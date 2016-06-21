@@ -1,7 +1,7 @@
 var renderer, onRenderFcts, scene, camera, controls, light, gridXZ, starSphere, axisHelper;
 
 //this.universePlanet = Object.keys(UniverseData.planet());
-//this.planets = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
+this.planets = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 
 // Render the scene
 renderer	= new THREE.WebGLRenderer({
@@ -135,31 +135,8 @@ var Planet = function(planet){
 
 	// Add container to the scene
 	scene.add(this.containerPlanet)
-
-	if (planet == "Earth")
-		this.planetMesh = THREEx.Planets.createEarth()
-	if (planet == "Sun")
-		this.planetMesh = THREEx.Planets.createSun()
-	if (planet == "Mercury")
-		this.planetMesh = THREEx.Planets.createMercury()
-	if (planet == "Venus")
-		this.planetMesh = THREEx.Planets.createVenus()
-	if (planet == "Mars")
-		this.planetMesh = THREEx.Planets.createMars()
-	if (planet == "Jupiter")
-		this.planetMesh = THREEx.Planets.createJupiter()
-	if (planet == "Saturn")
-		this.planetMesh = THREEx.Planets.createSaturn()
-		//this.planetMeshRing = THREEx.Planets.createSaturnRing()
-	if (planet == "Uranus")
-		this.planetMesh = THREEx.Planets.createUranus()
-		//this.planetMeshRing = THREEx.Planets.createUranusRing()
-	if (planet == "Neptune")
-		this.planetMesh = THREEx.Planets.createNeptune()
-	if (planet == "Pluto")
-		this.planetMesh = THREEx.Planets.createPluto()
-	if (planet == "Starfield")
-		this.planetMesh = THREEx.Planets.createStarfield()
+	var planetFunction = 'create' + planet
+	this.planetMesh = THREEx.Planets[planetFunction]()
 
 	this.containerPlanet.add(this.planetMesh)
 	this.distanceFromSun =  UniverseData.getPosition(planet);
@@ -225,7 +202,7 @@ var Planet = function(planet){
 } 
 
 //	Create solar system
-var Sun = new Planet("Sun");
+/*var Sun = new Planet("Sun");
 var Mercury = new Planet("Mercury")
 var Venus = new Planet("Venus")
 var Earth = new Planet("Earth")
@@ -234,7 +211,13 @@ var Jupiter = new Planet("Jupiter")
 var Saturn = new Planet("Saturn")
 var Uranus = new Planet("Uranus")
 var Neptune = new Planet("Neptune")
-var Pluto = new Planet("Pluto");
+var Pluto = new Planet("Pluto");*/
+
+for(var i=0; i < this.planets.length; i++){
+	var newPlanet =  this.planets[i];
+	console.log(newPlanet);
+	newPlanet = new Planet(newPlanet);
+}
 
 // Set default focus
 setFocusPlanet('Sun');
