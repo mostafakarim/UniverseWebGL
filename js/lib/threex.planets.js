@@ -109,7 +109,7 @@ THREEx.Planets.createEarthCloud	= function(radius){
 	}, false);
 	imageMap.src	= THREEx.Planets.baseURL+'images/earthcloudmap.jpg';
 
-	this.geometry	= new THREE.SphereGeometry(radius, 32, 32)
+	this.geometry	= new THREE.SphereGeometry(radius/2, 32, 32)
 	var material	= new THREE.MeshPhongMaterial({
 		map		: new THREE.Texture(canvasResult),
 		side		: THREE.DoubleSide,

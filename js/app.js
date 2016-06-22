@@ -16,7 +16,6 @@ scene	= new THREE.Scene();
 camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 5000 );
 
 // Camera Controls
-controls = new THREE.OrbitControls( camera );
 //var matrixCamera = new THREE.Matrix4();
 
 
@@ -46,8 +45,8 @@ light.shadowMapHeight	= 1024
 // Helpers
 gridXZ = new THREE.GridHelper(2000, 10);
 gridXZ.setColors( new THREE.Color(0xFFC0CB), new THREE.Color(0x8f8f8f) );
-gridXZ.position.set(0,0,0 );
-//scene.add(gridXZ);
+gridXZ.position.set(0,0,0);
+scene.add(gridXZ);
 
 axisHelper = new THREE.AxisHelper( 5 );
 //scene.add( axisHelper );
@@ -96,14 +95,21 @@ function setFocusPlanet(planet){
 	this.focusPlanet = window[planet];
 	/*camera.position.x = window[planet].planetMesh.position.x + this.focusRadius*4;
 	camera.position.y =  window[planet].planetMesh.position.y;*/
-	camera.position.y =  window[planet].planetMesh.position.y + this.focusRadius*8;
+	//camera.position.y =  window[planet].planetMesh.position.y + this.focusRadius*8;
 
-	//controls.target.copy(window[planet].planetMesh.position)
+	var cameraPlanet = 'camera' + planet
+	var controlsPlanet = 'controls' + planet
+	window[cameraPlanet].position.x =  window[planet].planetMesh.position.x + this.focusRadius*8;
+	window[cameraPlanet].position.y =  0;
+	window[cameraPlanet].position.z =  window[planet].planetMesh.position.z + this.focusRadius*4;
+
+	//window[cameraPlanet].rotation.y = window[planet].planetMesh.rotation.y;
+	window[controlsPlanet] = new THREE.OrbitControls( window[cameraPlanet] );
 
 	onRenderFcts.push(function(){
-		renderer.render( scene, camera );
-		camera.lookAt(window[planet].planetMesh.position);
-		controls.update();		
+		renderer.render( scene, window[cameraPlanet] );
+		window[cameraPlanet].lookAt(window[planet].planetMesh.position);
+		window[controlsPlanet].update();		
 	})
 }
 
@@ -135,7 +141,7 @@ function sec(years){
 		//Cloud
 		var earthCloud = THREEx.Planets.createEarthCloud(radiusPlanet);
 		//var earthCloud	= new THREE.Mesh(planetMesh.geometry, materialCloud );
-		//earthCloud.scale.multiplyScalar(0.13);
+		earthCloud.scale.multiplyScalar(0.25);
 
 		planetMesh.add(earthCloud);
 
@@ -144,7 +150,7 @@ function sec(years){
 		moon.position.set(0.5, 0.5, 0.5)
 		moon.castShadow	= true 
 		moon.receiveShadow	= true
-		moon.scale.multiplyScalar(1/5);
+		moon.scale.multiplyScalar(1/10);
 		
 		planetMesh.add(moon);
 
@@ -184,6 +190,11 @@ var Planet = function(planet){
 	if(this.inclinaison)
 		this.containerPlanet.rotateZ(rad(this.inclinaison))
 
+	var cameraPlanet = 'camera' + planet
+	window[cameraPlanet]  = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 5000 );
+
+	window[cameraPlanet].rotateY(rad(this.inclinaison));
+	console.log(window[cameraPlanet].rotation)
 	// Add container to the scene
 	scene.add(this.containerPlanet)
 	var planetFunction = 'create' + planet
@@ -200,6 +211,7 @@ var Planet = function(planet){
 	}
 	var planetContainerName;
 	var radius = UniverseData.getRadius(planet);
+
 
 	onRenderFcts.push(function(delta, now){
 		planetContainerName = window[planet].containerPlanet;
@@ -227,7 +239,7 @@ for(var i=0; i < this.planets.length; i++){
 }
 
 // Set default focus
-setFocusPlanet('Sun');
+setFocusPlanet('Earth');
 
 
 //var maxRange = UniverseData.planet('Pluto')['DistancefromSun']
