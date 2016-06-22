@@ -24,10 +24,15 @@
 			height: 90px;
 			left: 50%;
 			transform: translateX(-50%);
+			transform-origin: center;
 			bottom: 85px;
+			transition: .6s all ease-in;
 		}
 		li:hover {
 			transform: scale(1);
+		}
+		li:hover img{
+			animation: turnPlanet 3s linear forwards;
 		}
 		li a {
 			color: #ffffff;
@@ -40,9 +45,12 @@
 		}
 
 		@keyframes turnPlanet {
-			100% {
-				transform: rotate(360deg);
-			}
+			from {
+			    transform:  translateX(-50%) rotate(0deg);
+			  }
+			  to {
+			    transform:  translateX(-50%) rotate(30deg);
+			  }
 		}
 	</style>
 </head>

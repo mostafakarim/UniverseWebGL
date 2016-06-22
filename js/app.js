@@ -91,7 +91,7 @@ requestAnimationFrame(function animate(nowMsec){
 
 
 function setFocusPlanet(planet){
-	var planet = planet || 'Earth';
+	var planet = planet || 'Sun';
 	this.focusRadius = UniverseData.getRadius(planet);
 	this.focusPlanet = window[planet];
 	/*camera.position.x = window[planet].planetMesh.position.x + this.focusRadius*4;
@@ -115,6 +115,57 @@ function rad(degree){
 function sec(years){
 	var secondes = years*24*60*60;
 	return secondes;
+}
+
+ function dependency(planet, planetMesh){
+	var type = type || null;
+	var radiusPlanet = UniverseData.getRadius(planet);
+	if(planet == 'Earth'){
+
+		//Atmoshere
+		var materialAtmosphere	= THREEx.createAtmosphereMaterial()
+		materialAtmosphere.uniforms.glowColor.value.set(0x00b3ff)
+		materialAtmosphere.uniforms.coeficient.value	= 0.8
+		materialAtmosphere.uniforms.power.value		= 2.0
+		var atmosphereEarth	= new THREE.Mesh(planetMesh.geometry, materialAtmosphere );
+		atmosphereEarth.scale.multiplyScalar(1.01);
+
+		planetMesh.add(atmosphereEarth);
+
+		//Cloud
+		var earthCloud = THREEx.Planets.createEarthCloud(radiusPlanet);
+		//var earthCloud	= new THREE.Mesh(planetMesh.geometry, materialCloud );
+		//earthCloud.scale.multiplyScalar(0.13);
+
+		planetMesh.add(earthCloud);
+
+		//Moon
+		var moon = THREEx.Planets.createMoon();
+		moon.position.set(0.5, 0.5, 0.5)
+		moon.castShadow	= true 
+		moon.receiveShadow	= true
+		moon.scale.multiplyScalar(1/5);
+		
+		planetMesh.add(moon);
+
+	}
+
+	if(planet == 'Sun'){
+		var materialSun	= THREEx.createAtmosphereMaterial()
+		materialSun.uniforms.glowColor.value.set(0xFFF191)
+		materialSun.uniforms.coeficient.value	= 0.8
+		materialSun.uniforms.power.value		= 3
+		var atmosphereSun	= new THREE.Mesh(planetMesh.geometry, materialSun );
+		atmosphereSun.scale.multiplyScalar(1.01);
+		
+		planetMesh.add(atmosphereSun);
+	}
+
+/*	if(planet == 'Uranus' ||planet == 'Saturn')
+		planetMesh.add(this.planetMeshRing);*/
+
+		
+	return
 }
 
 // Class Planet 
@@ -142,81 +193,37 @@ var Planet = function(planet){
 	this.distanceFromSun =  UniverseData.getPosition(planet);
 	this.planetMesh.position.set(this.distanceFromSun,0,0)
 	var OrbitalVelocity = UniverseData.planet(planet)['OrbitalVelocity'];
+	
 	if(OrbitalVelocity){
 		OrbitalVelocity = OrbitalVelocity.replace(',','');
 		OrbitalVelocity = OrbitalVelocity / 1000
 	}
+	var planetContainerName;
+	var radius = UniverseData.getRadius(planet);
 
 	onRenderFcts.push(function(delta, now){
-		window[planet].planetMesh.rotation.y += 1/32 * delta;	
-		if(OrbitalVelocity)
-			window[planet].containerPlanet.rotation.y += OrbitalVelocity;
+		planetContainerName = window[planet].containerPlanet;
+		// Rotate around the world, around the world ♪
+		window[planet].planetMesh.rotation.y += 1/32 * delta;
+
+		//Rotate around the Sun	
+		/*if(OrbitalVelocity){
+			if(planetContainerName.rotation.y > rad(360))
+				planetContainerName.rotation.y = 0;
+			else
+				planetContainerName.rotation.y += OrbitalVelocity;
+		}*/
+
 	})
 
-	if(planet == 'Sun'){
-		var radiusPlanet = UniverseData.getRadius(planet);
-		radius = radiusPlanet ;
-		var geometry	= new THREE.SphereGeometry(radius, 32, 32)
-		var material	= THREEx.createAtmosphereMaterial()
-		material.uniforms.glowColor.value.set(0xFFF191)
-		material.uniforms.coeficient.value	= 0.8
-		material.uniforms.power.value		= 3
-		var atmosphereSun	= new THREE.Mesh(geometry, material );
-		atmosphereSun.scale.multiplyScalar(1.01);
-		this.containerPlanet.add(atmosphereSun);
-	}
-	if(planet == 'Uranus' ||planet == 'Saturn')
-		this.planetMesh.add(this.planetMeshRing);
-
-
-	if(planet == 'Earth'){
-		//console.log(UniverseData.planet(planet)['RotationPeriod'] / UniverseData.ratioTmp, 1/32 )
-
-		var radiusPlanet = UniverseData.getRadius(planet);
-		radius = radiusPlanet ;
-		var geometry	= new THREE.SphereGeometry(radius, 32, 32)
-		var material	= THREEx.createAtmosphereMaterial()
-		material.uniforms.glowColor.value.set(0x00b3ff)
-		material.uniforms.coeficient.value	= 0.8
-		material.uniforms.power.value		= 2.0
-		var atmosphereEarth	= new THREE.Mesh(geometry, material );
-		atmosphereEarth.scale.multiplyScalar(1.01);
-		this.planetMesh.add(atmosphereEarth);
-
-		var earthCloud	= THREEx.Planets.createEarthCloud(radius)
-		earthCloud.receiveShadow	= true
-		earthCloud.castShadow	= true
-		this.planetMesh.add(earthCloud)
-
-		onRenderFcts.push(function(delta, now){
-			earthCloud.rotation.y += 1/8 * delta;		
-		})
-
-		this.sat = THREEx.Planets.createMoon()
-		this.sat.position.set(0.5, 0.5, 0.5)
-		this.sat.scale.multiplyScalar(1/5)
-		this.sat.receiveShadow	= true
-		this.sat.castShadow	= true          
-		this.planetMesh.add(this.sat)
-	}          
+	dependency(planet, this.planetMesh);          
 } 
 
 //	Create solar system
-/*var Sun = new Planet("Sun");
-var Mercury = new Planet("Mercury")
-var Venus = new Planet("Venus")
-var Earth = new Planet("Earth")
-var Mars = new Planet("Mars")
-var Jupiter = new Planet("Jupiter")
-var Saturn = new Planet("Saturn")
-var Uranus = new Planet("Uranus")
-var Neptune = new Planet("Neptune")
-var Pluto = new Planet("Pluto");*/
 
 for(var i=0; i < this.planets.length; i++){
 	var newPlanet =  this.planets[i];
-	console.log(newPlanet);
-	newPlanet = new Planet(newPlanet);
+	window[this.planets[i]] = new Planet(newPlanet);
 }
 
 // Set default focus
