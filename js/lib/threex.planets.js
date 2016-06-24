@@ -122,14 +122,15 @@ THREEx.Planets.createEarthCloud	= function(radius){
 
 
 THREEx.Planets.createMoon	= function(){
-	this.geometry	= new THREE.SphereGeometry(0.5, 32, 32)
+	this.radius = 0.5//UniverseData.getRadius('Moon');
+	this.geometry	= new THREE.SphereGeometry(this.radius, 32, 32)
 	var material	= new THREE.MeshPhongMaterial({
 		map	: THREE.ImageUtils.loadTexture(THREEx.Planets.baseURL+'images/moonmap1k.jpg'),
 		bumpMap	: THREE.ImageUtils.loadTexture(THREEx.Planets.baseURL+'images/moonbump1k.jpg'),
 		bumpScale: 0.002,
 	})
 	var mesh	= new THREE.Mesh(this.geometry, material)
-	return mesh	
+	return mesh	, this.radius
 }
 
 THREEx.Planets.createMars	= function(){
@@ -222,7 +223,9 @@ THREEx.Planets.createSaturnRing	= function(){
 	}, false);
 	imageMap.src	= THREEx.Planets.baseURL+'images/saturnringcolor.jpg';
 	
-	this.geometry	= new THREEx.Planets._RingGeometry(0.55, 0.75, 64);
+	var radius = UniverseData.getRadius(planet);
+	
+	this.geometry	= new THREEx.Planets._RingGeometry(radius, 0.75, 64);
 	var material	= new THREE.MeshPhongMaterial({
 		map		: new THREE.Texture(canvasResult),
 		// map		: THREE.ImageUtils.loadTexture(THREEx.Planets.baseURL+'images/ash_uvgrid01.jpg'),
@@ -346,7 +349,7 @@ THREEx.Planets.createStarfield	= function(){
 		map	: texture,
 		side	: THREE.BackSide
 	})
-	this.geometry	= new THREE.SphereGeometry( 4000, 32, 32)
+	this.geometry	= new THREE.SphereGeometry( 8000, 32, 32)
 	var mesh	= new THREE.Mesh(this.geometry, material)
 	return mesh	
 }

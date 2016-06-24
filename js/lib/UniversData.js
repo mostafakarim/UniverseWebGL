@@ -1,7 +1,7 @@
 var UniverseData = UniverseData || {}
 
 UniverseData.ratio = 25512*2; // default value 
-UniverseData.ratioTmp = 0.0002; // default value 
+UniverseData.ratioTmp = 0.00002; // default value 
 UniverseData.planet	= {}
 UniverseData.unity	= {}
 
