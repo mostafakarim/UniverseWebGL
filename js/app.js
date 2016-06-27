@@ -24,7 +24,7 @@ light	= new THREE.AmbientLight( 0x222222 )
 scene.add( light )
 
 light	= new THREE.DirectionalLight( 0xffffff, 1 )
-light.position.set(5,5,5)
+light.position.set(0,0,0)
 scene.add( light )
 light.castShadow	= true
 light.shadowCameraNear	= 0.01
@@ -41,12 +41,7 @@ light.shadowDarkness	= 0.2
 
 light.shadowMapWidth	= 1024
 light.shadowMapHeight	= 1024
-
-/*spotLight.castShadow = true;
-spotLight.angle = Math.PI / 4;
-spotLight.penumbra = 0.05;
-spotLight.decay = 2;
-spotLight.distance = 200;*/
+light.decay = 2;
 
 // Helpers
 gridXZ = new THREE.GridHelper(2000, 10);
@@ -54,7 +49,7 @@ gridXZ.setColors( new THREE.Color(0xFFC0CB), new THREE.Color(0x8f8f8f) );
 gridXZ.position.set(0,0,0);
 
 axisHelper = new THREE.AxisHelper( 5 );
-//scene.add( axisHelper );
+light.add( axisHelper );
 
 // Add starfield
 
@@ -157,7 +152,6 @@ function sec(years){
 		materialSun.uniforms.power.value		= 3
 		var atmosphereSun	= new THREE.Mesh(planetMesh.geometry, materialSun );
 		atmosphereSun.scale.multiplyScalar(1.01);
-		
 		planetMesh.add(atmosphereSun);
 	}
 
@@ -166,8 +160,6 @@ function sec(years){
 		this.planetMeshRing.scale.multiplyScalar(4);
 		planetMesh.add(this.planetMeshRing);
 	}
-
-		
 	return
 }
 
@@ -175,16 +167,16 @@ function setFocusPlanet(planet){
 	var planet = planet || 'Sun';
 	this.focusRadius = UniverseData.getRadius(planet);
 	this.focusPlanet = window[planet];
-	if(Sun){
-		console.log(Sun)
-		window[planet].cameraPlanet.lookAt(Sun.planetMesh.position);
-	}
 
+	this.focusPlanet.cameraPlanet.position.set(this.focusPlanet.radius*4,this.focusPlanet.radius,0)
+	this.focusPlanet.cameraPlanet.rotation.set(0,0,0)
+
+	this.focusPlanet.cameraPlanet.lookAt(Sun.planetMesh.position);
+	
 	onRenderFcts.push(function(){
-		renderer.render( scene, window[planet].cameraPlanet );
-		 window[planet].controlsPlanet.update();		
+		renderer.render( scene, this.focusPlanet.cameraPlanet );
+		this.focusPlanet.controlsPlanet.update();		
 	})
-
 }
 
 // Class Planet 
@@ -194,62 +186,68 @@ var Planet = function(planet){
 	this.planetMesh = null;
 	this.planetMeshRing = null;
 	this.inclinaison = null;
+	var planetContainerName;
+	this.radius = UniverseData.getRadius(planet);
+
+	//Create Scene for each planet
+	this.scenePlanet = new THREE.Object3D()
 
 	//Create Container
 	this.containerPlanet = new THREE.Object3D()
 
 	// Add container to the scene
-	scene.add(this.containerPlanet)
+	this.scenePlanet.add(this.containerPlanet);
+
+	scene.add(this.scenePlanet)
 	var planetFunction = 'create' + planet
 	this.planetMesh = THREEx.Planets[planetFunction]()
 
 	this.containerPlanet.add(this.planetMesh)
 	this.distanceFromSun =  UniverseData.getPosition(planet);
-	this.planetMesh.position.set(this.distanceFromSun,0,0)
+	this.containerPlanet.position.set(this.distanceFromSun,0,0)
+
 	var OrbitalVelocity = UniverseData.planet(planet)['OrbitalVelocity'];
 	
 	if(OrbitalVelocity){
 		OrbitalVelocity = OrbitalVelocity.replace(',','');
 		OrbitalVelocity = OrbitalVelocity * UniverseData.ratioTmp
 	}
-	var planetContainerName;
-	var radius = UniverseData.getRadius(planet);
 
-
-	//Set Angle of each planets
+	//Set Angle for each planet
 	this.inclinaison = UniverseData.planet(planet)['OrbitalInclination']
 	if(this.inclinaison)
-		this.containerPlanet.rotateZ(rad(this.inclinaison))
+		this.scenePlanet.rotateZ(rad(this.inclinaison))
 
-	//this.cameraPlanet = 'camera' + planet
+	//Set cericle in one day for each planet
+	this.circlePerDay = UniverseData.planet(planet)['LengthDay']
+
 	this.cameraPlanet  = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 5000 );
-	this.cameraPlanet.position.x =  radius*4;
-	this.cameraPlanet.position.y =  radius;
+	this.cameraPlanet.position.x =  this.radius*4;
+	this.cameraPlanet.position.y =  this.radius;
 	this.cameraPlanet.position.z =  0;
-	//this.cameraPlanet.rotateZ(rad(- this.inclinaison));
-	//this.cameraPlanet.rotation.z = rad(180);
 
-	this.planetMesh.add(this.cameraPlanet)
-
+	this.containerPlanet.add(this.cameraPlanet)
 	this.controlsPlanet = new THREE.OrbitControls( this.cameraPlanet );
-	this.planetMesh.add(this.controlsPlanet )
+	this.containerPlanet.add(this.controlsPlanet )
 
-	
+	if(planet != 'Sun'){
+		onRenderFcts.push(function(delta, now){
+			planetContainerName = window[planet].containerPlanet;
+			// Rotate around the world, around the world ♪
+			window[planet].planetMesh.rotation.y += 1/window[planet].circlePerDay * delta;
 
-	onRenderFcts.push(function(delta, now){
-		planetContainerName = window[planet].containerPlanet;
-		// Rotate around the world, around the world ♪
-		//window[planet].planetMesh.rotation.y += 1/32 * delta;
+			//Rotate around the Sun	
+			if(OrbitalVelocity){
+				if(planetContainerName.rotation.y > rad(360))
+					planetContainerName.rotation.y = 0;
+				else
+					planetContainerName.rotation.y += OrbitalVelocity;
+			}
 
-		//Rotate around the Sun	
-		if(OrbitalVelocity){
-			if(planetContainerName.rotation.y > rad(360))
-				planetContainerName.rotation.y = 0;
-			else
-				planetContainerName.rotation.y += OrbitalVelocity;
-		}
+		})
+		
+	}
 
-	})
 
 	dependency(planet, this.planetMesh);          
 } 
@@ -261,7 +259,7 @@ for(var i=0; i < this.planets.length; i++){
 	window[this.planets[i]] = new Planet(newPlanet);
 }
 
-
+light.position.x= Sun.radius;
 
 // Set default focus
 setFocusPlanet('Earth');
