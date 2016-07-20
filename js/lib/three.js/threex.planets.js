@@ -4,7 +4,35 @@ THREEx.Planets	= {}
 
 THREEx.Planets.baseURL	= ''
 
-// from http://planetpixelemporium.com/
+/*THREEx.Planets.names = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
+for (var i = 0; i < THREEx.Planets.names.length; i++) {
+	var planetName = THREEx.Planets.names[i];
+	var nameFunction = 'create' + planetName;
+	
+	createFunction(nameFunction);
+}
+
+function createFunction(nameFunction){
+	var createMyPlanet = function(){
+		console.log(nameFunction )
+		var planet = planetName;
+		var radius = UniverseData.getRadius(planet);
+		var geometry	= new THREE.SphereGeometry(radius, 32, 32)
+		if(planetName == 'Sun')
+			var texture	= THREE.ImageUtils.loadTexture(THREEx.Planets.baseURL+'images/sunmap.jpg')
+		if(texture){
+			var material	= new THREE.MeshPhongMaterial({
+				map	: texture,
+				bumpMap	: texture,
+				bumpScale: 0.05,
+			})
+		}
+		var mesh	= new THREE.Mesh(geometry, material)
+		return mesh	
+	}
+
+	THREEx.Planets.window[nameFunction] = createMyPlanet;
+}*/
 
 THREEx.Planets.createSun	= function(){
 	var planet = 'Sun';
@@ -121,7 +149,8 @@ THREEx.Planets.createEarthCloud	= function(){
 
 
 THREEx.Planets.createMoon	= function(){
-	var geometry	= new THREE.SphereGeometry(0.5, 32, 32)
+	this.radius = UniverseData.getRadius('Moon');
+	var geometry	= new THREE.SphereGeometry(this.radius, 32, 32)
 	var material	= new THREE.MeshPhongMaterial({
 		map	: THREE.ImageUtils.loadTexture(THREEx.Planets.baseURL+'images/moonmap1k.jpg'),
 		bumpMap	: THREE.ImageUtils.loadTexture(THREEx.Planets.baseURL+'images/moonbump1k.jpg'),
@@ -215,7 +244,7 @@ THREEx.Planets.createSaturnRing	= function(){
 			}
 			// update texture with result
 			contextResult.putImageData(dataResult,0,0)	
-			material.map.needsUpdate = true;
+			//material.map.needsUpdate = true;
 		})
 		imageTrans.src	= THREEx.Planets.baseURL+'images/saturnringpattern.gif';
 	}, false);
@@ -345,7 +374,7 @@ THREEx.Planets.createStarfield	= function(){
 		map	: texture,
 		side	: THREE.BackSide
 	})
-	var geometry	= new THREE.SphereGeometry(100, 32, 32)
+	var geometry	= new THREE.SphereGeometry(600, 32, 32)
 	var mesh	= new THREE.Mesh(geometry, material)
 	return mesh	
 }
@@ -417,7 +446,7 @@ THREEx.Planets._RingGeometry = function ( innerRadius, outerRadius, thetaSegment
 		this.faceVertexUvs[0].push(uvs);
 	}
 
-	this.computeCentroids();
+	//this.computeCentroids();
 	this.computeFaceNormals();
 
 	this.boundingSphere = new THREE.Sphere( new THREE.Vector3(), outerRadius );

@@ -1,6 +1,6 @@
 var UniverseData = UniverseData || {}
 
-UniverseData.ratio = 25512*2; // default value 
+UniverseData.ratioDistance = 25512*2; // default value 
 UniverseData.ratioTmp = 0.00002; // default value 
 UniverseData.planet	= {}
 UniverseData.unity	= {}
@@ -34,21 +34,24 @@ UniverseData.unity.planets = function(unity){
 	return this.planets[unity];
 }
 
-UniverseData.setRatio = function(ratio) {
-	if(isNumber (ratio))
-		return UniverseData.ratio = ratio;
+UniverseData.setRatio = function(ratioDistance) {
+	if(isNumber (ratioDistance))
+		return UniverseData.ratioDistance = ratioDistance;
 }
 
 UniverseData.getRadius = function(planet){
 	var diameter = UniverseData.planet(eval('planet'))['Diameter'];
 	diameter = diameter.replace(',','');
-	diameter = Number(diameter) / UniverseData.ratio;
+	diameter = Number(diameter) / UniverseData.ratioDistance;
 	return diameter/2;
 }
 
 UniverseData.getPosition = function(planet){
-	var distance = UniverseData.planet(planet)['DistancefromSun'];
-	distance = (Number(distance) * Math.pow(10, 6)) / (UniverseData.ratio*256);
+	if(planet == 'Moon')
+		var distance = UniverseData.planet(planet)['DistancefromEarth'];
+	else
+		var distance = UniverseData.planet(planet)['DistancefromSun'];
+	distance = (Number(distance) * Math.pow(10, 6)) / (UniverseData.ratioDistance*256);
 	return distance;
 }
 
@@ -59,39 +62,27 @@ UniverseData.planet = function(planet){
 	this.data = {
 		'Sun' : {
 			'name' 	: 'Sun',
-			'toEarth'	: {
-				'value' : 	'149 600 000'
-			},
-			'Diameter'  : '391,400',
-			'DistancefromSun' : '0', //REALLY ???
-			'temperature'  	: {
-				'surface' 	: {
-					'value' : 	'6 000',
-					'unity' : 	'C'
-				},
-				'center' 	: {
-					'value' : 	'15 000 000',
-					'unity' : 	'C'
-				}
-			},
-			'rotation'  : {
-				'equator' : {
-					'value' : '25',
-					'unity' : 'days'
-				},
-				'pole'	: {
-					'value' : '34',
-					'unity' : 'days'
-				}
-			},
-			'age'  : {
-				'value' : 	'5 000 000',
-				'unity' : 	'years'
-			},
-			'luminosity'  : {
-				'value' : 	'149 600 000',
-				'unity' : 	'10e12 kw'
-			}
+			'Mass' : '1,988,500',
+			'Diameter': '391,400',
+			'Density': '1408',
+			'Gravity': '274.0',
+			'EscapeVelocity': '617.6',
+			'RotationPeriod': '609.1',
+			'LengthDay': false,
+			'DistancefromSun': false,
+			'Perihelion': false,
+			'Aphelion': false,
+			'OrbitalPeriod': false,
+			'OrbitalVelocity': false,
+			'OrbitalInclination': false,
+			'OrbitalEccentricit' : false,
+			'ObliquityToOrbit': false,
+			'MeanTemperature': false,
+			'SurfacePressure': false,
+			'NumberMoons': '10',
+			'RingSystem': false,
+			'GlobalMagneticFied' : true
+
 		},
 		'Mercury' : {
 			'name' 	: 'Mercury',
