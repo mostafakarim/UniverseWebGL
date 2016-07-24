@@ -1,37 +1,99 @@
 var UniverseData = UniverseData || {}
 
-UniverseData.ratioDistance = 25512*2; // default value 
-UniverseData.ratioTmp = 0.00002; // default value 
+UniverseData.ratioDistance = 25512*4; // default value 
 UniverseData.planet	= {}
 UniverseData.unity	= {}
 
-UniverseData.unity.planets = function(unity){
+UniverseData.unity = function(unity){
 	var unity = unity || null;
 
 	this.planets = {
-		'Mass' 					:  '10e24 kg',
-		'Diameter' 				:  'km',
-		'Density' 				:  'kg/m3',
-		'Gravity'  				:  'm/s²',
-		'EscapeVelocity' 		:  'km/s',
-		'RotationPeriod' 		:  'hours',
-		'LengthDay' 			:  'hours',
-		'DistancefromSun' 		:  '10e6 km',
-		'DistancefromEarth'		:  '10e6 km',
-		'Perihelion' 			:  '10e6 km',
-		'Aphelion' 				:  '10e6 km',
-		'OrbitalPeriod' 		:  'days',
-		'OrbitalVelocity' 		:  'km/s',
-		'OrbitalInclination'	:  'degrees',
-		'OrbitalEccentricity' 	:  false,
-		'ObliquityToOrbit' 		:  'degrees',
-		'MeanTemperature' 		:  'C',
-		'SurfacePressure' 		:  'bars',
-		'NumberMoons' 			:  false,
-		'RingSystem' 			:  false,
-		'GlobalMagneticField' 	:  false
+		'Mass' 					:  {
+										0 : '10e24 Kg',
+										1 : 'Mass'
+									},
+		'Diameter' 				:  {
+										0 : 'Km',
+										1 : 'Diameter'
+									},
+		'Density' 				:  {
+										0 : 'Kg/m3',
+										1 : 'Density'
+									},
+		'Gravity'  				:  {
+										0 : 'M/s^2',
+										1 : 'Gravity'
+									},
+		'EscapeVelocity' 		:  {
+										0 : 'Km/s',
+										1 : 'Escape Velocity'
+									},
+		'RotationPeriod' 		:  {
+										0 : 'Hours',
+										1 : 'Rotation Period'
+									},
+		'LengthDay' 			:  {
+										0 : 'Hours',
+										1 : 'Length of day'
+									},
+		'DistanceFromSun' 		:  {
+										0 : '10e6 Km',
+										1 : 'Distance from Sun'
+									},
+		'DistanceFromEarth'		:  {
+										0 : '10e6 Km',
+										1 : 'Distance from Earth'
+									},
+		'Perihelion' 			:  {
+										0 : '10e6 Km',
+										1 : 'Perihelion'
+									},
+		'Aphelion' 				:  {
+										0 : '10e6 Km',
+										1 : 'Aphelion'
+									},
+		'OrbitalPeriod' 		:  {
+										0 : 'Days',
+										1 : 'Orbital Period'
+									},
+		'OrbitalVelocity' 		:  {
+										0 : 'Km/s',
+										1 : 'Orbital Velocity'
+									},
+		'OrbitalInclination'	:  {
+										0 : 'Degrees',
+										1 : 'Orbital Inclination'
+									},
+		'OrbitalEccentricity' 	:  {
+										0 : '',
+										1 : 'Orbital Eccentricity'
+									},
+		'ObliquityToOrbit' 		:  {
+										0 : 'Degrees',
+										1 : 'Obliquity to Orbit'
+									},
+		'MeanTemperature' 		:  {
+										0 : 'C',
+										1 : 'Mean Temperature'
+									},
+		'SurfacePressure' 		:  {
+										0 : 'Bars',
+										1 : 'Surface Pressure'
+									},
+		'NumberMoons' 			:  {
+										0 : '',
+										1 : 'Number of Moons'
+									},
+		'GlobalMagneticField' 	:  {
+										0 : '',
+										1 : 'Global MagneticField'
+									}
 	}
-	return this.planets[unity];
+
+	if(!unity)
+		return this.planets;
+	else
+		return this.planets[unity];
 }
 
 UniverseData.setRatio = function(ratioDistance) {
@@ -47,10 +109,12 @@ UniverseData.getRadius = function(planet){
 }
 
 UniverseData.getPosition = function(planet){
+	var distance;
 	if(planet == 'Moon')
-		var distance = UniverseData.planet(planet)['DistancefromEarth'];
+		distance = UniverseData.planet(planet)['DistanceFromEarth'] *10;
 	else
-		var distance = UniverseData.planet(planet)['DistancefromSun'];
+		distance = UniverseData.planet(planet)['DistancefromSun'];
+
 	distance = (Number(distance) * Math.pow(10, 6)) / (UniverseData.ratioDistance*256);
 	return distance;
 }
@@ -58,10 +122,9 @@ UniverseData.getPosition = function(planet){
 UniverseData.planet = function(planet){
 
 	var planet = planet || null;
-
 	this.data = {
 		'Sun' : {
-			'name' 	: 'Sun',
+			'Name' 	: 'Sun',
 			'Mass' : '1,988,500',
 			'Diameter': '391,400',
 			'Density': '1408',
@@ -81,11 +144,12 @@ UniverseData.planet = function(planet){
 			'SurfacePressure': false,
 			'NumberMoons': '10',
 			'RingSystem': false,
-			'GlobalMagneticFied' : true
+			'GlobalMagneticFied' : true,
+			'Color' : 0xb28129
 
 		},
 		'Mercury' : {
-			'name' 	: 'Mercury',
+			'Name' 	: 'Mercury',
 			'Mass' : '0.330',
 			'Diameter': '4879',
 			'Density': '5427',
@@ -105,10 +169,11 @@ UniverseData.planet = function(planet){
 			'SurfacePressure': '0',
 			'NumberMoons': '0',
 			'RingSystem': false,
-			'GlobalMagneticFied' : true
+			'GlobalMagneticFied' : true,
+			'Color' : 0xbd9156
 		},
 		'Venus' : {
-			'name' 	: 'Venus',
+			'Name' 	: 'Venus',
 			'Mass' : '4.87',
 			'Diameter': '12,104',
 			'Density': '5243',
@@ -128,10 +193,11 @@ UniverseData.planet = function(planet){
 			'SurfacePressure': '92',
 			'NumberMoons': '0',
 			'RingSystem': false,
-			'GlobalMagneticFied' : false
+			'GlobalMagneticFied' : false,
+			'Color' : 0xa05912
 		},
 		'Earth' : {
-			'name' 	: 'Earth',
+			'Name' 	: 'Earth',
 			'Mass' : '5.97',
 			'Diameter': '12,756',
 			'Density': '5514',
@@ -151,10 +217,11 @@ UniverseData.planet = function(planet){
 			'SurfacePressure': '1',
 			'NumberMoons': '1',
 			'RingSystem': false,
-			'GlobalMagneticFied' : true
+			'GlobalMagneticFied' : true,
+			'Color' : 0x6eaae4
 		},
 		'Moon' : {
-			'name' 	: 'Moon',
+			'Name' 	: 'Moon',
 			'Mass' : '0.073',
 			'Diameter': '3475',
 			'Density': '3340',
@@ -162,7 +229,7 @@ UniverseData.planet = function(planet){
 			'EscapeVelocity': '2.4',
 			'RotationPeriod': '655.7',
 			'LengthDay': '708.7',
-			'DistancefromEarth': '0.384',
+			'DistanceFromEarth': '0.384',
 			'Perihelion': '0.363',
 			'Aphelion': '0.406',
 			'OrbitalPeriod': '27.3',
@@ -174,10 +241,11 @@ UniverseData.planet = function(planet){
 			'SurfacePressure': '0',
 			'NumberMoons': '0',
 			'RingSystem': false,
-			'GlobalMagneticFied' : false
+			'GlobalMagneticFied' : false,
+			'Color' : 0xa4a4a4
 		},
 		'Mars' : {
-			'name' 	: 'Mars',
+			'Name' 	: 'Mars',
 			'Mass' : '0.642',
 			'Diameter': '6792',
 			'Density': '3933',
@@ -197,10 +265,11 @@ UniverseData.planet = function(planet){
 			'SurfacePressure': '0.01',
 			'NumberMoons': '2',
 			'RingSystem': false,
-			'GlobalMagneticFied' : false
+			'GlobalMagneticFied' : false,
+			'Color' : 0x76583b
 		},
 		'Jupiter' : {
-			'name' 	: 'Jupiter',
+			'Name' 	: 'Jupiter',
 			'Mass' : '1898',
 			'Diameter': '142,984',
 			'Density': '1326',
@@ -220,10 +289,11 @@ UniverseData.planet = function(planet){
 			'SurfacePressure':  false,
 			'NumberMoons': '67',
 			'RingSystem': true,
-			'GlobalMagneticFied' : true
+			'GlobalMagneticFied' : true,
+			'Color' : 0xb09377
 		},
 		'Saturn' : {
-			'name' 	: 'Saturn',
+			'Name' 	: 'Saturn',
 			'Mass' : '568',
 			'Diameter': '120,536',
 			'Density': '687',
@@ -243,10 +313,11 @@ UniverseData.planet = function(planet){
 			'SurfacePressure': false,
 			'NumberMoons': '62',
 			'RingSystem': true,
-			'GlobalMagneticFied' : true
+			'GlobalMagneticFied' : true,
+			'Color' : 0x876a49
 		},
 		'Uranus' : {
-			'name' 	: 'Uranus',
+			'Name' 	: 'Uranus',
 			'Mass' : '86.8',
 			'Diameter': '51,118',
 			'Density': '1271',
@@ -266,10 +337,11 @@ UniverseData.planet = function(planet){
 			'SurfacePressure': false,
 			'NumberMoons': '27',
 			'RingSystem': true,
-			'GlobalMagneticFied' : true
+			'GlobalMagneticFied' : true,
+			'Color' : 0x697d86
 		},
 		'Neptune' : {
-			'name' 	: 'Neptune',
+			'Name' 	: 'Neptune',
 			'Mass' : '102',
 			'Diameter': '49,528',
 			'Density': '1638',
@@ -289,10 +361,11 @@ UniverseData.planet = function(planet){
 			'SurfacePressure': false,
 			'NumberMoons': '14',
 			'RingSystem': true,
-			'GlobalMagneticFied' : true
+			'GlobalMagneticFied' : true,
+			'Color' : 0x4a62a9
 		},
 		'Pluto' : {
-			'name' 	: 'Pluto',
+			'Name' 	: 'Pluto',
 			'Mass' : '0.0146',
 			'Diameter': '2370',
 			'Density': '2095',
@@ -312,7 +385,8 @@ UniverseData.planet = function(planet){
 			'SurfacePressure': '0',
 			'NumberMoons': '5',
 			'RingSystem': false,
-			'GlobalMagneticFied' : false
+			'GlobalMagneticFied' : false,
+			'Color' : 0x464a57
 		}
 	}
 

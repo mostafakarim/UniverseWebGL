@@ -2,73 +2,71 @@
 <html>
 <head>
 	<title>	Univers</title>
-	<style>
-		ul {
-			position: absolute;
-			left: 50%;
-			transform: translateX(-50%);
-			bottom: 0;
-			width: 100%;
-			padding: 0;		}
-		li {
-			list-style: none;
-			float: left;
-			transform: scale(0.6);
-			text-align: center;
-			transform-origin: center;
-			transition: transform 0.3s ease-in-out;
-			width: 10%;
-		}
-		li img {
-			position: absolute;
-			height: 90px;
-			left: 50%;
-			transform: translateX(-50%);
-			transform-origin: center;
-			bottom: 85px;
-			transition: .6s all ease-in;
-		}
-		li:hover {
-			transform: scale(1);
-		}
-		li:hover img{
-			animation: turnPlanet 3s linear forwards;
-		}
-		li a {
-			color: #ffffff;
-			cursor: pointer;
-			font-size: 2.7em;
-			font-family: arial, sans-serif;
-			position: relative;
-			z-index: 2;
-			padding: 115px 1px 10px 0;
-		}
-
-		@keyframes turnPlanet {
-			from {
-			    transform:  translateX(-50%) rotate(0deg);
-			  }
-			  to {
-			    transform:  translateX(-50%) rotate(30deg);
-			  }
-		}
-	</style>
+	<link rel="stylesheet" type="text/css" href="styles.css">
 </head>
-<body id="wrap" style="margin: 0px; background-color: #000000; overflow: hidden;">
+<body id="wrap" >
 
-	<ul>
-		<li><a hreh="#" onclick="setFocusPlanet('Sun');"> Sun</a><img src="images/icons/sun.png" alt=""></li>
-		<li><a hreh="#" onclick="setFocusPlanet('Mercury');"> Mercury</a><img src="images/icons/mercury.png" alt=""></li>
-		<li><a hreh="#" onclick="setFocusPlanet('Venus');"> Venus</a><img src="images/icons/venus.png" alt=""></li>
-		<li><a hreh="#" onclick="setFocusPlanet('Earth');"> Earth</a><img src="images/icons/earth.png" alt=""></li>
-		<li><a hreh="#" onclick="setFocusPlanet('Mars');"> Mars</a><img src="images/icons/mars.png" alt=""></li>
-		<li><a hreh="#" onclick="setFocusPlanet('Jupiter');"> Jupiter</a><img src="images/icons/jupiter.png" alt=""></li>
-		<li><a hreh="#" onclick="setFocusPlanet('Saturn');"> Saturn</a><img src="images/icons/saturn.png" alt=""></li>
-		<li><a hreh="#" onclick="setFocusPlanet('Uranus');"> Uranus</a><img src="images/icons/uranus.png" alt=""></li>
-		<li><a hreh="#" onclick="setFocusPlanet('Neptune');"> Neptune</a><img src="images/icons/neptune.png" alt=""></li>
-		<li><a hreh="#" onclick="setFocusPlanet('Pluto');"> Pluto</a><img src="images/icons/pluto.png" alt=""></li>
+	<ul class="wrap-focus-planet">
+		<li><a hreh="#" class="focus-planet" onclick="setFocusPlanet('Sun');"> Sun</a><img src="images/icons/sun.png" alt=""></li>
+		<li><a hreh="#" class="focus-planet" onclick="setFocusPlanet('Mercury');"> Mercury</a><img src="images/icons/mercury.png" alt=""></li>
+		<li><a hreh="#" class="focus-planet" onclick="setFocusPlanet('Venus');"> Venus</a><img src="images/icons/venus.png" alt=""></li>
+		<li><a hreh="#" class="focus-planet" onclick="setFocusPlanet('Earth');"> Earth</a><img src="images/icons/earth.png" alt=""></li>
+		<li><a hreh="#" class="focus-planet" onclick="setFocusPlanet('Mars');"> Mars</a><img src="images/icons/mars.png" alt=""></li>
+		<li><a hreh="#" class="focus-planet" onclick="setFocusPlanet('Jupiter');"> Jupiter</a><img src="images/icons/jupiter.png" alt=""></li>
+		<li><a hreh="#" class="focus-planet" onclick="setFocusPlanet('Saturn');"> Saturn</a><img src="images/icons/saturn.png" alt=""></li>
+		<li><a hreh="#" class="focus-planet" onclick="setFocusPlanet('Uranus');"> Uranus</a><img src="images/icons/uranus.png" alt=""></li>
+		<li><a hreh="#" class="focus-planet" onclick="setFocusPlanet('Neptune');"> Neptune</a><img src="images/icons/neptune.png" alt=""></li>
+		<li><a hreh="#" class="focus-planet" onclick="setFocusPlanet('Pluto');"> Pluto</a><img src="images/icons/pluto.png" alt=""></li>
 	</ul>
 
+	<div class="wrapper-content">
+		<div class="content">
+			<div class="close"></div>
+			<div class="planet">
+				<h1>Sun</h1>
+				<div class="content-data"></div>
+			</div>
+			<div class="planet">
+				<h1>Mercury</h1>
+				<div class="content-data"></div>
+			</div>
+			<div class="planet">
+				<h1>Venus</h1>
+				<div class="content-data"></div>
+			</div>
+			<div class="planet">
+				<h1>Earth</h1>
+				<div class="content-data"></div>
+			</div>
+			<div class="planet">
+				<h1>Mars</h1>
+				<div class="content-data"></div>
+			</div>
+			<div class="planet">
+				<h1>Jupiter</h1>
+				<div class="content-data"></div>
+			</div>
+			<div class="planet">
+				<h1>Saturn</h1>
+				<div class="content-data"></div>
+			</div>
+			<div class="planet">
+				<h1>Uranus</h1>
+				<div class="content-data"></div>
+			</div>
+			<div class="planet">
+				<h1>Neptune</h1>
+				<div class="content-data"></div>
+			</div>
+			<div class="planet">
+				<h1>Pluto</h1>
+				<div class="content-data"></div>
+			</div>
+		</div>
+	</div>
+
+<script src='./js/lib/jquery-3.1.0.min.js'></script>
+<script src='./js/lib/UniverseData.js'></script>
 <script src='./js/lib/three.js/three.min.js'></script>
 <script src='./js/lib/three.js/TrackballControls.js'></script>
 <script src='./js/lib/three.js/threex.planets.js'></script>
@@ -78,7 +76,6 @@
 <script src='./js/lib/three.js/TextGeometry.js'></script>
 <script src='./js/lib/three.js/Camera.js'></script>
 <script src='./js/lib/tween.min.js'></script>
-<script src='./js/lib/UniversData.js'></script>
 <script src='./js/app.js'></script>
 </body>
 </html>
